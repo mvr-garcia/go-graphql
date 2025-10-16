@@ -42,7 +42,7 @@ func (ca *CategoryAdapter) FindByID(id string) (domain.Category, error) {
 	err := ca.db.QueryRow("SELECT id, name, description FROM categories WHERE id = ?", id).Scan(&category.ID, &category.Name, &category.Description)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return domain.Category{}, nil // or return a custom error indicating not found
+			return domain.Category{}, domain.ErrNotFound
 		}
 		return domain.Category{}, err
 	}

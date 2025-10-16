@@ -42,7 +42,7 @@ func (ca *CourseAdapter) FindByID(id string) (domain.Course, error) {
 	err := ca.db.QueryRow("SELECT id, title, description, category_id FROM courses WHERE id = ?", id).Scan(&course.ID, &course.Title, &course.Description, &course.CategoryID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return domain.Course{}, nil // or return a custom error indicating not found
+			return domain.Course{}, domain.ErrNotFound
 		}
 		return domain.Course{}, err
 	}
