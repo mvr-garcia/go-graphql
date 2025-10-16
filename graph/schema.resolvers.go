@@ -9,11 +9,26 @@ import (
 	"fmt"
 
 	"github.com/mvr-garcia/go-graphql/graph/model"
+	"github.com/mvr-garcia/go-graphql/internal/domain"
 )
 
 // CreateCategory is the resolver for the createCategory field.
 func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCategory) (*model.Category, error) {
-	panic(fmt.Errorf("not implemented: CreateCategory - createCategory"))
+	category := domain.Category{
+		Name:        input.Name,
+		Description: input.Description,
+	}
+
+	categoryResult, err := r.CategoryRepo.Create(category)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Category{
+		ID:          categoryResult.ID,
+		Name:        categoryResult.Name,
+		Description: categoryResult.Description,
+	}, nil
 }
 
 // CreateCourse is the resolver for the createCourse field.

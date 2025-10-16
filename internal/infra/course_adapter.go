@@ -17,7 +17,7 @@ func NewCourseAdapter(db *sql.DB) domain.CourseRepository {
 }
 
 func (ca *CourseAdapter) FindAll() ([]domain.Course, error) {
-	rows, err := ca.db.Query("SELECT id, title, description, category_id FROM courses")
+	rows, err := ca.db.Query("SELECT id, name, description, category_id FROM courses")
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +26,7 @@ func (ca *CourseAdapter) FindAll() ([]domain.Course, error) {
 	var courses []domain.Course
 	for rows.Next() {
 		var course domain.Course
-		if err := rows.Scan(&course.ID, &course.Title, &course.Description, &course.CategoryID); err != nil {
+		if err := rows.Scan(&course.ID, &course.Name, &course.Description, &course.CategoryID); err != nil {
 			return nil, err
 		}
 		courses = append(courses, course)
@@ -39,7 +39,7 @@ func (ca *CourseAdapter) FindAll() ([]domain.Course, error) {
 
 func (ca *CourseAdapter) FindByID(id string) (domain.Course, error) {
 	var course domain.Course
-	err := ca.db.QueryRow("SELECT id, title, description, category_id FROM courses WHERE id = ?", id).Scan(&course.ID, &course.Title, &course.Description, &course.CategoryID)
+	err := ca.db.QueryRow("SELECT id, name, description, category_id FROM courses WHERE id = ?", id).Scan(&course.ID, &course.Name, &course.Description, &course.CategoryID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return domain.Course{}, domain.ErrNotFound
@@ -51,15 +51,15 @@ func (ca *CourseAdapter) FindByID(id string) (domain.Course, error) {
 
 func (ca *CourseAdapter) Create(course domain.Course) (domain.Course, error) {
 	id := uuid.New().String()
-	_, err := ca.db.Exec("INSERT INTO courses (id, title, description, category_id) VALUES (?, ?, ?, ?)", id, course.Title, course.Description, course.CategoryID)
+	_, err := ca.db.Exec("INSERT INTO courses (id, name, description, category_id) VALUES (?, ?, ?, ?)", id, course.Name, course.Description, course.CategoryID)
 	if err != nil {
 		return domain.Course{}, err
 	}
-	return domain.Course{ID: id, Title: course.Title, Description: course.Description, CategoryID: course.CategoryID}, nil
+	return domain.Course{ID: id, Name: course.Name, Description: course.Description, CategoryID: course.CategoryID}, nil
 }
 
 func (ca *CourseAdapter) Update(course domain.Course) (domain.Course, error) {
-	_, err := ca.db.Exec("UPDATE courses SET title = ?, description = ?, category_id = ? WHERE id = ?", course.Title, course.Description, course.CategoryID, course.ID)
+	_, err := ca.db.Exec("UPDATE courses SET name = ?, description = ?, category_id = ? WHERE id = ?", course.Name, course.Description, course.CategoryID, course.ID)
 	if err != nil {
 		return domain.Course{}, err
 	}
