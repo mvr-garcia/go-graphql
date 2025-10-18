@@ -8,8 +8,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mvr-garcia/go-graphql/graph/model"
 	"github.com/mvr-garcia/go-graphql/internal/domain"
+	"github.com/mvr-garcia/go-graphql/internal/ui/graph/model"
 )
 
 // CreateCategory is the resolver for the createCategory field.
