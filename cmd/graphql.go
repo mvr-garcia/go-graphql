@@ -3,30 +3,47 @@ package cmd
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/mvr-garcia/go-graphql/internal/app"
+	"github.com/mvr-garcia/go-graphql/internal/infra"
 	"github.com/mvr-garcia/go-graphql/internal/ui/graph"
 	"github.com/spf13/cobra"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
-const defaultPort = "8080"
-
 var graphqlCmd = &cobra.Command{
 	Use:   "graphql-api",
 	Short: "Start the graphql",
 	Run: func(cmd *cobra.Command, args []string) {
-		port := os.Getenv("PORT")
-		if port == "" {
-			port = defaultPort
+		// Load config
+		config := app.LoadConfig()
+
+		// Get DB connection
+		db, err := infra.GetDB(config.Database.Driver, config.Database.DSN)
+		if err != nil {
+			log.Fatal("failed to connect to db:", err)
 		}
 
-		srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+		// Initialize repositories
+		categoryRepo := infra.NewCategoryAdapter(db)
+		courseRepo := infra.NewCourseAdapter(db)
+
+		// Start GraphQL server
+		port := config.Port
+
+		srv := handler.New(graph.NewExecutableSchema(
+			graph.Config{
+				Resolvers: &graph.Resolver{
+					CategoryRepo: categoryRepo,
+					CourseRepo:   courseRepo,
+				},
+			},
+		))
 
 		srv.AddTransport(transport.Options{})
 		srv.AddTransport(transport.GET{})

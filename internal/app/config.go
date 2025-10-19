@@ -17,7 +17,7 @@ type Config struct {
 func LoadConfig() *Config {
 
 	viper.SetDefault("Port", "8080")
-	viper.SetDefault("Database.Driver", "sqlite3")
+	viper.SetDefault("Database.Driver", "sqlite")
 	viper.SetDefault("Database.DSN", "./data.db")
 
 	viper.AutomaticEnv()
