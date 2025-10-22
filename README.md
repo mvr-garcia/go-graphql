@@ -6,8 +6,8 @@ A GraphQL API built with Go following clean architecture principles, using gqlge
 
 This project follows **Ports and Adapters (Hexagonal Architecture)** pattern, ensuring separation of concerns and high testability:
 
+- **Config Layer**: Contains application configuration management
 - **Domain Layer**: Contains business entities and rules
-- **Application Layer**: Contains use cases and configuration
 - **Infrastructure Layer**: Contains database adapters and external integrations
 - **UI Layer**: Contains GraphQL resolvers and schema definitions
 
@@ -28,9 +28,9 @@ go-graphql/
 ├── cmd/                    # CLI commands
 │   ├── graphql.go         # GraphQL server command
 │   └── root.go            # Root command configuration
+├── config/                # Configuration layer
+│   └── config.go          # Application configuration management
 ├── internal/
-│   ├── app/               # Application layer
-│   │   └── config.go      # Configuration management
 │   ├── domain/            # Domain layer
 │   │   ├── entity.go      # Business entities
 │   │   ├── errors.go      # Domain errors
