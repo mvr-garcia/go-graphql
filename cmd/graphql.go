@@ -9,7 +9,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/mvr-garcia/go-graphql/internal/app"
+	"github.com/mvr-garcia/go-graphql/config"
 	"github.com/mvr-garcia/go-graphql/internal/infra"
 	"github.com/mvr-garcia/go-graphql/internal/ui/graph"
 	"github.com/spf13/cobra"
@@ -21,7 +21,7 @@ var graphqlCmd = &cobra.Command{
 	Short: "Start the graphql",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Load config
-		config := app.LoadConfig()
+		config := config.LoadConfig()
 
 		// Get DB connection
 		db, err := infra.GetDB(config.Database.Driver, config.Database.DSN)

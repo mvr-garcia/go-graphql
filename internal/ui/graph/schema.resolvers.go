@@ -8,27 +8,22 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mvr-garcia/go-graphql/internal/domain"
 	"github.com/mvr-garcia/go-graphql/internal/ui/graph/model"
 )
 
+// Courses is the resolver for the courses field.
+func (r *categoryResolver) Courses(ctx context.Context, obj *model.Category) ([]*model.Course, error) {
+	panic(fmt.Errorf("not implemented: Courses - courses"))
+}
+
+// Category is the resolver for the category field.
+func (r *courseResolver) Category(ctx context.Context, obj *model.Course) (*model.Category, error) {
+	panic(fmt.Errorf("not implemented: Category - category"))
+}
+
 // CreateCategory is the resolver for the createCategory field.
 func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCategory) (*model.Category, error) {
-	category := domain.Category{
-		Name:        input.Name,
-		Description: input.Description,
-	}
-
-	categoryResult, err := r.CategoryRepo.Create(category)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.Category{
-		ID:          categoryResult.ID,
-		Name:        categoryResult.Name,
-		Description: categoryResult.Description,
-	}, nil
+	panic(fmt.Errorf("not implemented: CreateCategory - createCategory"))
 }
 
 // CreateCourse is the resolver for the createCourse field.
@@ -46,11 +41,19 @@ func (r *queryResolver) Courses(ctx context.Context) ([]*model.Course, error) {
 	panic(fmt.Errorf("not implemented: Courses - courses"))
 }
 
+// Category returns CategoryResolver implementation.
+func (r *Resolver) Category() CategoryResolver { return &categoryResolver{r} }
+
+// Course returns CourseResolver implementation.
+func (r *Resolver) Course() CourseResolver { return &courseResolver{r} }
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+type categoryResolver struct{ *Resolver }
+type courseResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
