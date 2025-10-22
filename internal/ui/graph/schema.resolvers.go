@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/mvr-garcia/go-graphql/internal/domain"
 	"github.com/mvr-garcia/go-graphql/internal/ui/graph/model"
 )
 
@@ -23,12 +24,47 @@ func (r *courseResolver) Category(ctx context.Context, obj *model.Course) (*mode
 
 // CreateCategory is the resolver for the createCategory field.
 func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCategory) (*model.Category, error) {
-	panic(fmt.Errorf("not implemented: CreateCategory - createCategory"))
+	// Map input to domain entity
+	category := domain.Category{
+		Name:        input.Name,
+		Description: input.Description,
+	}
+
+	// Save category using repository
+	savedCategory, err := r.CategoryRepo.Create(category)
+	if err != nil {
+		return nil, err
+	}
+
+	// Map domain entity to GraphQL model
+	return &model.Category{
+		ID:          savedCategory.ID,
+		Name:        savedCategory.Name,
+		Description: savedCategory.Description,
+	}, nil
 }
 
 // CreateCourse is the resolver for the createCourse field.
 func (r *mutationResolver) CreateCourse(ctx context.Context, input model.NewCourse) (*model.Course, error) {
-	panic(fmt.Errorf("not implemented: CreateCourse - createCourse"))
+	// Map input to domain entity
+	course := domain.Course{
+		Name:        input.Name,
+		Description: input.Description,
+		CategoryID:  input.CategoryID,
+	}
+
+	// Save course using repository
+	savedCourse, err := r.CourseRepo.Create(course)
+	if err != nil {
+		return nil, err
+	}
+
+	// Map domain entity to GraphQL model
+	return &model.Course{
+		ID:          savedCourse.ID,
+		Name:        savedCourse.Name,
+		Description: savedCourse.Description,
+	}, nil
 }
 
 // Categories is the resolver for the categories field.

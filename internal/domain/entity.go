@@ -10,5 +10,5 @@ type Course struct {
 	ID          string
 	Name        string
 	Description *string
-	CategoryID  int
+	CategoryID  string
 }

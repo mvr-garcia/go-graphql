@@ -3,3 +3,6 @@ gqlgen-install:
 
 generate: gqlgen-install
 	go run github.com/99designs/gqlgen generate
+
+graphql: 
+	go run main.go graphql-api

@@ -163,10 +163,33 @@ resolver:
 gqlgen generate
 ```
 
+## 🔧 Make Commands
+
+This project includes a Makefile with useful commands:
+
+### Install gqlgen
+```bash
+make gqlgen-install
+```
+
+### Generate GraphQL code
+```bash
+make generate
+```
+
+### Start the GraphQL server
+```bash
+make graphql
+```
+
 ## ▶️ Running the Application
 
 ### Start the GraphQL server
 ```bash
+# Using Make command (recommended)
+make graphql
+
+# Or directly with Go
 go run main.go graphql-api
 ```
 
