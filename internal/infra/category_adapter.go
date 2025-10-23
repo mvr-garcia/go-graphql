@@ -49,6 +49,26 @@ func (ca *CategoryAdapter) FindByID(id string) (domain.Category, error) {
 	return category, nil
 }
 
+func (ca *CategoryAdapter) FindByCourseID(courseID string) (domain.Category, error) {
+	stmt := `
+		SELECT c.id, c.name, c.description
+		FROM categories c
+		JOIN courses co ON co.category_id = c.id
+		WHERE co.id = ?
+	`
+
+	var category domain.Category
+	err := ca.db.QueryRow(stmt, courseID).Scan(&category.ID, &category.Name, &category.Description)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return domain.Category{}, domain.ErrNotFound
+		}
+		return domain.Category{}, err
+	}
+
+	return category, nil
+}
+
 func (ca *CategoryAdapter) Create(category domain.Category) (domain.Category, error) {
 	id := uuid.New().String()
 	_, err := ca.db.Exec("INSERT INTO categories (id, name, description) VALUES (?, ?, ?)", id, category.Name, category.Description)

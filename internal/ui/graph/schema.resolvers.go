@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mvr-garcia/go-graphql/internal/domain"
 	"github.com/mvr-garcia/go-graphql/internal/ui/graph/model"
@@ -14,12 +13,35 @@ import (
 
 // Courses is the resolver for the courses field.
 func (r *categoryResolver) Courses(ctx context.Context, obj *model.Category) ([]*model.Course, error) {
-	panic(fmt.Errorf("not implemented: Courses - courses"))
+	courses, err := r.CourseRepo.FindByCategoryID(obj.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*model.Course
+	for _, course := range courses {
+		result = append(result, &model.Course{
+			ID:          course.ID,
+			Name:        course.Name,
+			Description: course.Description,
+		})
+	}
+
+	return result, nil
 }
 
 // Category is the resolver for the category field.
 func (r *courseResolver) Category(ctx context.Context, obj *model.Course) (*model.Category, error) {
-	panic(fmt.Errorf("not implemented: Category - category"))
+	category, err := r.CategoryRepo.FindByCourseID(obj.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Category{
+		ID:          category.ID,
+		Name:        category.Name,
+		Description: category.Description,
+	}, nil
 }
 
 // CreateCategory is the resolver for the createCategory field.
@@ -69,12 +91,40 @@ func (r *mutationResolver) CreateCourse(ctx context.Context, input model.NewCour
 
 // Categories is the resolver for the categories field.
 func (r *queryResolver) Categories(ctx context.Context) ([]*model.Category, error) {
-	panic(fmt.Errorf("not implemented: Categories - categories"))
+	categories, err := r.CategoryRepo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*model.Category
+	for _, cat := range categories {
+		result = append(result, &model.Category{
+			ID:          cat.ID,
+			Name:        cat.Name,
+			Description: cat.Description,
+		})
+	}
+
+	return result, nil
 }
 
 // Courses is the resolver for the courses field.
 func (r *queryResolver) Courses(ctx context.Context) ([]*model.Course, error) {
-	panic(fmt.Errorf("not implemented: Courses - courses"))
+	courses, err := r.CourseRepo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*model.Course
+	for _, course := range courses {
+		result = append(result, &model.Course{
+			ID:          course.ID,
+			Name:        course.Name,
+			Description: course.Description,
+		})
+	}
+
+	return result, nil
 }
 
 // Category returns CategoryResolver implementation.

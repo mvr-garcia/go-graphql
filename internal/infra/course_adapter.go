@@ -49,6 +49,28 @@ func (ca *CourseAdapter) FindByID(id string) (domain.Course, error) {
 	return course, nil
 }
 
+func (ca *CourseAdapter) FindByCategoryID(categoryID string) ([]domain.Course, error) {
+	rows, err := ca.db.Query("SELECT id, name, description, category_id FROM courses WHERE category_id = ?", categoryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var courses []domain.Course
+	for rows.Next() {
+		var course domain.Course
+		if err := rows.Scan(&course.ID, &course.Name, &course.Description, &course.CategoryID); err != nil {
+			return nil, err
+		}
+		courses = append(courses, course)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return courses, nil
+}
+
 func (ca *CourseAdapter) Create(course domain.Course) (domain.Course, error) {
 	id := uuid.New().String()
 	_, err := ca.db.Exec("INSERT INTO courses (id, name, description, category_id) VALUES (?, ?, ?, ?)", id, course.Name, course.Description, course.CategoryID)
