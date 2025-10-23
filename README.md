@@ -200,13 +200,24 @@ Open your browser and navigate to `http://localhost:8080` to access the GraphQL 
 
 ## 📝 Example Queries
 
-### Create a Category
+### Create Categories
 ```graphql
-mutation {
+mutation createCategory {
   createCategory(input: {
     name: "Programming"
     description: "Programming courses"
-  }) {
+  }){
+    id
+    name
+    description
+  }
+}
+
+mutation createCategory2 {
+  createCategory(input: {
+    name: "Self improvement"
+    description: "Habits and productivity"
+  }){
     id
     name
     description
@@ -216,30 +227,43 @@ mutation {
 
 ### Create a Course
 ```graphql
-mutation {
+mutation createCourse {
   createCourse(input: {
-    name: "Go Fundamentals"
-    description: "Learn Go programming language"
-    categoryId: "1"
-  }) {
+    name: "Why we sleep"
+    description: "Why We Sleep is an important and fascinating book."
+    categoryId: {uuid-returned-from-createCategory2}
+  }){
     id
     name
     description
-    category {
+  }
+}
+```
+
+### Query Categories
+```graphql
+query queryCategories{
+  categories{
+    id
+    name
+    description
+    courses{
+      id
       name
+      description
     }
   }
 }
 ```
 
-### Query Categories and Courses
+### Query Courses
 ```graphql
-query {
-  categories {
+query queryCourses{
+  courses{
     id
     name
     description
-    courses {
+    category{
       id
       name
       description
